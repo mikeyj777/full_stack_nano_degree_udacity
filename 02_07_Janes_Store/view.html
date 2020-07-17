@@ -1,0 +1,6 @@
+<div id="polo" data-id="1">Polo</div>
+
+document.getElementById('polo').onClick = function() {
+    var request = new Request();
+    request.send('GET product detail on product with id', 1)
+}
