@@ -15,6 +15,10 @@ class Todo(db.Model):
     __tablename__ = 'todos'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable = False)
+    # non-nullables will cause errors when upgrading with flask migrate
+    # with tables that have existing data.
+    # fix this with adding steps to migration file
+    completed = db.Column(db.Boolean, nullable = False, default = False)
 
     def __refr__(self):
         return f'<Todo {self.id} {self.description}>'
