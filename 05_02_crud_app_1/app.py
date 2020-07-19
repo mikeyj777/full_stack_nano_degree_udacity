@@ -58,6 +58,23 @@ def create_todo():
     else:
         abort (500)
 
+@app.route('/todos/<todo_id>/set-completed', methods=['POST'])
+def set_completed_todo(todo_id):
+    try:
+        print(request.get_json()['completed'])
+        completed = request.get_json()['completed']
+        print(completed)
+        todo = Todo.query.get(todo_id)
+        todo.completed = completed
+        print(todo)
+        db.session.commmit()
+        print('committed')
+    except:
+        print(sys.exc_info())
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():

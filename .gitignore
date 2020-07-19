@@ -8,3 +8,4 @@
 05_02_crud_app_1/__pycache__/app.cpython-37.pyc
 05_02_crud_app_1/migrations/versions/__pycache__/28bf00927601_.cpython-37.pyc
 05_02_crud_app_1/__pycache__/app.cpython-37.pyc
+*.pyc
