@@ -38,11 +38,8 @@
                 return response.json();
             })
             .then(function(jsonResponse) {
-                console.log(jsonResponse['description']);
                 const liItem = document.createElement('LI');
                 liItem.innerHTML = jsonResponse['description'];
-                console.log(liItem);
-                console.log(liItem.innerHTML);
                 document.getElementById('todos').appendChild(liItem);
                 document.getElementById('error').className = 'hidden';
             })

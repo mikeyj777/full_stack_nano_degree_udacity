@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-
 from flask_sqlalchemy import SQLAlchemy
+import sys
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://user1@localhost:5432/todoapp'
@@ -20,13 +21,31 @@ db.create_all()
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
     #lecture 5.8
-    description = request.get_json()['description']
-    todo = Todo(description = description)
-    db.session.add(todo)
-    db.session.commit()
-    return jsonify({
-        'description': todo.description
-    })
+    error = False
+    #use dummy dict 'body' to capture todo data before it expires
+    body = {}
+    try:
+        description = request.get_json()['description']
+        todo = Todo(description = description)
+        db.session.add(todo)
+        db.session.commit()
+        body['description'] = todo.description
+    except:
+        error = True
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    
+    if not error:
+        # return jsonify({
+        #     'description': todo.description
+        # })
+
+        return jsonify(body)
+    else:
+        return None
+
 
 @app.route('/')
 def index():
