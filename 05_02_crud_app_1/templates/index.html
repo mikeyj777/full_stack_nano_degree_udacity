@@ -24,8 +24,6 @@
 
     <script>
         document.getElementById('form').onsubmit = function(e) {
-            //e ~ event
-            //going to prevent default refresh, etc.
             e.preventDefault();
             fetch('todos/create', {
                 method: 'POST',
@@ -40,9 +38,11 @@
                 return response.json();
             })
             .then(function(jsonResponse) {
-                console.log(jsonResponse);
+                console.log(jsonResponse['description']);
                 const liItem = document.createElement('LI');
-                liItem.innerHTML = jsonResponse['descripton'];
+                liItem.innerHTML = jsonResponse['description'];
+                console.log(liItem);
+                console.log(liItem.innerHTML);
                 document.getElementById('todos').appendChild(liItem);
                 document.getElementById('error').className = 'hidden';
             })
