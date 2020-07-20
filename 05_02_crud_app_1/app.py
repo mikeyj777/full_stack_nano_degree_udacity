@@ -61,16 +61,13 @@ def create_todo():
 @app.route('/todos/<todo_id>/set-completed', methods=['POST'])
 def set_completed_todo(todo_id):
     try:
-        print(request.get_json()['completed'])
         completed = request.get_json()['completed']
-        print(completed)
+        print('completed', completed)
         todo = Todo.query.get(todo_id)
         todo.completed = completed
-        print(todo)
-        db.session.commmit()
-        print('committed')
+        db.session.commit()
+
     except:
-        print(sys.exc_info())
         db.session.rollback()
     finally:
         db.session.close()
@@ -86,4 +83,4 @@ def index():
     #     'description':'Todo 8'
     # }])
 
-    return render_template('index.html', data = Todo.query.all())
+    return render_template('index.html', data = Todo.query.order_by('id').all())
