@@ -2,8 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, a
 from flask_sqlalchemy import SQLAlchemy
 import sys
 from flask_migrate import Migrate
+import logging
 
-
+logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://user1@localhost:5432/todoapp'
 db = SQLAlchemy(app)
@@ -36,12 +37,10 @@ def create_todo():
         description = request.get_json()['description']
         todo = Todo(description = description)
         
-        #testing error handling
-        # todo = Todo(description2 = description)
-        
         db.session.add(todo)
         db.session.commit()
         body['description'] = todo.description
+
     except:
         error = True
         db.session.rollback()
@@ -57,6 +56,21 @@ def create_todo():
         return jsonify(body)
     else:
         abort (500)
+
+@app.route('/todos/<todo_id>/kill-it', methods=['DELETE'])
+def kill_todo(todo_id):
+    try:
+
+        todo = Todo.query.get(todo_id)
+        # db.session.delete(todo)
+        Todo.query.filter_by(id=todo_id).delete()
+        db.session.commit()
+
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return jsonify({ 'success': True })
 
 @app.route('/todos/<todo_id>/set-completed', methods=['POST'])
 def set_completed_todo(todo_id):
