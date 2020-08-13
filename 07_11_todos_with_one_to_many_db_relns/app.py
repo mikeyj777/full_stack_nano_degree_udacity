@@ -30,7 +30,7 @@ class TodoList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable = False)
     completed = db.Column(db.Boolean, nullable = False, default = False)
-    todos = db.relationship('Todo', backref = 'list', lazy=True)
+    todos = db.relationship('Todo', backref = 'list', lazy=True, cascade="all, delete-orphan")
 
 # will be managed with migrations
 # db.create_all()
@@ -56,6 +56,7 @@ def create_list():
         print(sys.exc_info())
         
     finally:
+
         db.session.close()
     
     if not error:
@@ -100,7 +101,6 @@ def create_todo():
 def kill_list(list_id):
     try:
         TodoList.query.filter_by(id=list_id).delete()
-        Todo.query.filter_by(list_id=list_id).delete()
         db.session.commit()
 
     except:
